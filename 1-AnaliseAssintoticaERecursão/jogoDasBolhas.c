@@ -16,7 +16,7 @@ void imprimeEntradas(int vetor[], int tamanhoDoVetor){
 }
 
 int bubbleSort(int vetor[], int tamanhoDoVetor){
-    int count = 0;
+    int count = 1;
     for(int i = tamanhoDoVetor -1; i > 0; i--){
         for(int j = 0; j < i; j++){
             if(vetor[j] > vetor[j+1]){
