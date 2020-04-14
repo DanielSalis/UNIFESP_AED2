@@ -75,7 +75,8 @@ public class Main {
                     / (float) totalDeVotosValidos;
             if (candidato.pctDeVotosPrimeiroTurno >= 0.5) {
                 todosOsCandidatosSaoInvalidos = false;
-                System.out.println(candidato.id + ": " + candidato.pctDeVotosPrimeiroTurno * 100);
+                System.out.print(candidato.id + " ");
+                System.out.printf("%.2f", candidato.pctDeVotosPrimeiroTurno * 100);
                 return;
             }
             if (candidato.pctDeVotosPrimeiroTurno > 0) {
@@ -84,7 +85,7 @@ public class Main {
         }
 
         if (todosOsCandidatosSaoInvalidos) {
-            System.out.println(0);
+            System.out.print(0);
             return;
         }
 
