@@ -1,121 +1,118 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Main{
-    int eleitores;
-    int votos;
-    int []votosPrimeiroTurno;
-    int votosContabilizadosDoPrimeiroTurno = 0;
-    int votosContabilizadosDoSegundoTurno = 0;
-    int []votesVector;
-    int [][]votesMatrix; 
+public class Main {
 
-    public Main(int lines, int columns){
-        this.eleitores = lines;
-        this.votos = columns;
+    public class Candidato {
+        int id;
+        int votosRecebidosPrimeiroTurno;
+        int votosRecebidosSegundoTurno;
+        float pctDeVotosPrimeiroTurno;
+        float pctDeVotosSegundoTurno;
+    }
 
-        votesVector = new int[columns];
-        votosPrimeiroTurno = new int[columns];
+    List<Candidato> Candidatos = new ArrayList<Candidato>();
+    int numEleitores;
+    int numVotos;
+    int[][] votesMatrix;
 
-        for(int i=0; i<columns; i++){
-            votesVector[i] = 0;
-            votosPrimeiroTurno [i] = 0;
+    public Main(int lines, int columns) {
+        this.numEleitores = lines;
+        this.numVotos = columns;
+
+        for (int i = 0; i < columns; i++) {
+            Candidato novoCandidato = new Candidato();
+            novoCandidato.id = i + 1;
+            novoCandidato.votosRecebidosPrimeiroTurno = 0;
+            Candidatos.add(novoCandidato);
         }
 
         votesMatrix = new int[lines][columns];
     }
 
-    public void setVotesMatrixValues(Scanner scanner){
-        for(int i=0; i<eleitores; i++){
-            for(int j=0; j<votos; j++){
+    public void printCandidatos() {
+        for (Candidato obj : Candidatos) {
+            System.out.println(obj.id + ": " + obj.votosRecebidosPrimeiroTurno);
+        }
+        System.out.println();
+    }
+
+    public void setVotesMatrixValues(Scanner scanner) {
+        for (int i = 0; i < numEleitores; i++) {
+            for (int j = 0; j < numVotos; j++) {
                 votesMatrix[i][j] = scanner.nextInt();
             }
-            countVotes(i);
-        }
-        setVotosDoPrimeiroTurno();
-    }
-
-    public void setVotosDoPrimeiroTurno(){
-        for(int i=0; i<eleitores; i++){
-            for(int j=0;j<votos;j++){
-                if(votesMatrix[i][0] == j+1){
-                    votosContabilizadosDoPrimeiroTurno++;
-                    votosPrimeiroTurno[j]++;
-                }
-            }
         }
     }
 
-    public float getResultadoDoPrimeiroTurno(){
-        float maior = -1;
-        float [] porcentagem = new float[votesVector.length]; 
-        for(int i=0; i<votesVector.length; i++){
-            porcentagem[i] = ((float) votosPrimeiroTurno[i] / (float) votosContabilizadosDoPrimeiroTurno);
-            if(maior < porcentagem[i]){
-                maior = porcentagem[i];
-            }
-            // System.out.println(i+1 + ": " + porcentagem[i]);
-        }
-
-        return maior;
-    }
-
-    public void printVotosPrimeiroTurno(){
-        for(int j=0; j<votos; j++){
-                System.out.println(j+1 + ": " + votosPrimeiroTurno[j]);
-            }
-    }
-
-    public void countVotes(int line){
-        for(int j=0; j<votos; j++){
-            if(votesMatrix[line][j] == j+1){
-                votosContabilizadosDoSegundoTurno++;
-                votesVector[j]++;
-            }
-        }
-    }
-
-    public void getResultadoDoSegundoTurno(){
-        float [] porcentagem = new float[votosPrimeiroTurno.length]; 
-        for(int i=0; i<votosPrimeiroTurno.length; i++){
-            porcentagem[i] = ((float) votesVector[i] / (float) votosContabilizadosDoSegundoTurno);
-            System.out.println(i+1 + ": " + porcentagem[i]);
-        }
-        //Fazer a ordenação das porcentagens
-    }
-
-    public void printVotes(){
-        for(int j=0; j<votos; j++){
-                System.out.println(j+1 + ": " + votesVector[j]);
-            }
-    }
-
-    public void printVotesMatrix(){
-        for(int i=0; i<eleitores; i++){
-            for(int j=0; j<votos; j++){
-                System.out.print(votesMatrix[i][j]+" ");
+    public void printVotesMatrix() {
+        for (int i = 0; i < numEleitores; i++) {
+            for (int j = 0; j < numVotos; j++) {
+                System.out.print(votesMatrix[i][j] + " ");
             }
             System.out.println();
         }
     }
 
+    public void getResultadosPrimeiroTurno() {
+        int totalDeVotosValidos = 0;
+        for (int i = 0; i < numEleitores; i++) {
+            for (Candidato candidato : Candidatos) {
+                if (candidato.id == votesMatrix[i][0]) {
+                    totalDeVotosValidos++;
+                    candidato.votosRecebidosPrimeiroTurno++;
+                }
+            }
+        }
+
+        for (Candidato candidato : Candidatos) {
+            candidato.pctDeVotosPrimeiroTurno = (float) candidato.votosRecebidos / (float) totalDeVotosValidos;
+            if (candidato.pctDeVotosPrimeiroTurno >= 0.5) {
+                System.out.println(candidato.id + ": " + candidato.pctDeVotosPrimeiroTurno);
+                return;
+            }
+        }
+
+        // OrdenarVetor de Candidatos
+        // pegar os dois com a maior porcentagem do primeiro turno
+
+        getResultadosSegundoTurno(candidato_1, candidato_2);
+    }
+
+    public void getResultadosSegundoTurno(Candidato candidato_1, Candidato candidato_2) {
+        int totalDeVotosValidos = 0;
+        for (int i = 0; i < numEleitores; i++) {
+            for (int j = 0; j < numVotos; j++) {
+                if (candidato_1.id == votesMatrix[i][j]) {
+                    totalDeVotosValidos++;
+                    candidato_1.votosRecebidosSegundoTurno++;
+                    break;
+                } else if (candidato_2.id == votesMatrix[i][j]) {
+                    totalDeVotosValidos++;
+                    candidato_2.votosRecebidosSegundoTurno++;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void selectionSort() {
+
+    }
+
     public static void main(String[] args) {
-        
+
         Scanner scanner = new Scanner(System.in);
 
         int lines = scanner.nextInt();
         int columns = scanner.nextInt();
-        
+
         Main main = new Main(lines, columns);
 
         main.setVotesMatrixValues(scanner);
-        System.out.println();
-        float maiorResultadoPrimeiroTurno = main.getResultadoDoPrimeiroTurno();
-        
-        if(maiorResultadoPrimeiroTurno >= 0.5){
-            System.out.println(maiorResultadoPrimeiroTurno);
-        }else{
-            main.getResultadoDoSegundoTurno();
-        }
+        main.getResultadosPrimeiroTurno();
+
         scanner.close();
     }
 }
