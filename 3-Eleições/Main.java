@@ -89,54 +89,36 @@ public class Main {
             return;
         }
 
-        // OrdenarVetor de Candidatos
-        List<Candidato> candidatosOrdenados = selectionSort(Candidatos);
-        getResultadosSegundoTurno(candidatosOrdenados.get(candidatosOrdenados.size() - 1),
-                candidatosOrdenados.get(candidatosOrdenados.size() - 2));
+        List<Candidato> candOrdenados = selectionSort(Candidatos);
+        Candidato c = candOrdenados.get(candOrdenados.size()-1);
+        System.out.print(c.id + " ");
+        System.out.printf("%.2f", c.pctDeVotosPrimeiroTurno * 100);
+        System.out.println();
+
+        getResultadosSegundoTurno(candOrdenados.get(candOrdenados.size() - 1),
+        candOrdenados.get(candOrdenados.size() - 2));
 
     }
 
     public void getResultadosSegundoTurno(Candidato candidato_1, Candidato candidato_2) {
+        int totalDeVotosValidos = numEleitores;
 
+        
         for (int i = 0; i < numEleitores; i++) {
+            boolean nenhumVoto = true;
             for (int j = 0; j < numVotos; j++) {
-                candidato_2.temAlgumVoto = false;
                 if (candidato_2.id == votesMatrix[i][j]) {
-                    candidato_2.temAlgumVoto = true;
                     candidato_2.votosRecebidosSegundoTurno++;
+                    nenhumVoto = false;
                     break;
                 } else if (candidato_1.id == votesMatrix[i][j]) {
-                    candidato_1.temAlgumVoto = true;
                     candidato_1.votosRecebidosSegundoTurno++;
+                    nenhumVoto = false;
                     break;
                 }
             }
-        }
-
-        int totalDeVotosValidos = numEleitores;
-        for (int i = 0; i < numEleitores; i++) {
-            for (int j = 0; j < numVotos; j++) {
-                candidato_1.temAlgumVoto = false;
-                if (candidato_1.id == votesMatrix[i][j]) {
-                    candidato_1.temAlgumVoto = true;
-                    break;
-                }
-            }
-            if (candidato_1.temAlgumVoto == false) {
-                candidato_1.totalVotosInvalidosSegundoTurno++;
-            }
-        }
-
-        for (int i = 0; i < numEleitores; i++) {
-            for (int j = 0; j < numVotos; j++) {
-                candidato_2.temAlgumVoto = false;
-                if (candidato_2.id == votesMatrix[i][j]) {
-                    candidato_2.temAlgumVoto = true;
-                    break;
-                }
-            }
-            if (candidato_2.temAlgumVoto == false) {
-                candidato_2.totalVotosInvalidosSegundoTurno++;
+            if (nenhumVoto == true) {
+                totalDeVotosValidos--;
             }
         }
 
@@ -146,18 +128,18 @@ public class Main {
 
         for (Candidato candidato : candidatosMaisVotados) {
             candidato.pctDeVotosSegundoTurno = (float) candidato.votosRecebidosSegundoTurno
-                    / (float) (totalDeVotosValidos - candidato.totalVotosInvalidosSegundoTurno);
+                    / (float) (totalDeVotosValidos);
         }
 
-        candidatosMaisVotados = selectionSort(candidatosMaisVotados);
+        candidatosMaisVotados = selectionSortII(candidatosMaisVotados);
 
         int size = candidatosMaisVotados.size() - 1;
-        for (int i = size; i >= 0; i--) {
-            Candidato c = candidatosMaisVotados.get(i);
-            System.out.print(c.id + " ");
-            System.out.printf("%.2f", c.pctDeVotosSegundoTurno * 100);
-            System.out.println();
-        }
+
+        Candidato c = candidatosMaisVotados.get(size);
+        System.out.print(c.id + " ");
+        System.out.printf("%.2f", c.pctDeVotosSegundoTurno * 100);
+        System.out.println();
+        
     }
 
     public List<Candidato> selectionSort(List<Candidato> candidatos) {
@@ -167,6 +149,25 @@ public class Main {
                 Candidato candAtual = candidatos.get(j);
                 Candidato candmenor = candidatos.get(menor);
                 if (candAtual.votosRecebidosPrimeiroTurno < candmenor.votosRecebidosPrimeiroTurno) {
+                    menor = j;
+                }
+            }
+
+            Candidato aux = candidatos.get(menor);
+            candidatos.set(menor, candidatos.get(i));
+            candidatos.set(i, aux);
+        }
+        return candidatos;
+        // System.out.println(Candidatos);
+    }
+
+    public List<Candidato> selectionSortII(List<Candidato> candidatos) {
+        for (int i = 0; i < candidatos.size(); i++) {
+            int menor = i;
+            for (int j = i + 1; j < candidatos.size(); j++) {
+                Candidato candAtual = candidatos.get(j);
+                Candidato candmenor = candidatos.get(menor);
+                if (candAtual.pctDeVotosSegundoTurno < candmenor.pctDeVotosSegundoTurno) {
                     menor = j;
                 }
             }
