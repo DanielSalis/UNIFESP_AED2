@@ -3,162 +3,129 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
-    public class Pessoa {
-        String nome;
-        int idade;
-        int posicaoInicial;
-        int posicaoFinal;
+    public class Participant {
+        int id;
+        int firstPosition;
+        int lastPosition;
+        int age;
+        String name;
     }
 
-    List<Pessoa> Pessoas = new ArrayList<Pessoa>();
-    int posicaoNomeImpresso;
-    int quantidadeNomesImpressos;
-    boolean caotic;
+    int numberOfParticipants;
+    List<Participant> participants = new ArrayList<Participant>();
 
-    public void setData(Scanner scanner) {
-        int numeroPessoas = scanner.nextInt();
+    public void setParticipants() {
+        Scanner s = new Scanner(System.in);
+        this.numberOfParticipants = s.nextInt();
 
-        for (int i = 0; i < numeroPessoas; i++) {
-            Pessoa pessoa = new Pessoa();
-            pessoa.nome = scanner.next();
-            pessoa.idade = scanner.nextInt();
-            pessoa.posicaoInicial = i;
-            pessoa.posicaoFinal = i;
-
-            Pessoas.add(pessoa);
+        int i;
+        for (i = 0; i < numberOfParticipants; i++) {
+            Participant p = new Participant();
+            p.id = i;
+            p.firstPosition = i;
+            p.lastPosition = -1;
+            p.name = s.next();
+            p.age = s.nextInt();
+            this.participants.add(p);
         }
 
-        posicaoNomeImpresso = scanner.nextInt();
-        quantidadeNomesImpressos = scanner.nextInt();
+        s.close();
+
+        this.quicksort(this.participants, 0, this.participants.size());
     }
 
-    public int encontrarPivo(int p, int r) {
-        int meio = (p + r) / 2;
+    public void printParticipants() {
+        System.out.println("--------------");
 
-        Pessoa a = Pessoas.get(p);
-        Pessoa b = Pessoas.get(meio);
-        Pessoa c = Pessoas.get(r);
+        int i;
+        for (i = 0; i < this.numberOfParticipants; i++) {
+            Participant p = participants.get(i);
+            System.out.println(p.age + " " + p.name);
+        }
+    }
 
-        int mediana = 0;
+    public void swap(List<Participant> A, int i, int j) {
+        Participant I = A.get(i);
+        Participant J = A.get(j);
 
-        if (a.idade < b.idade) {
-            if (b.idade < c.idade) {
-                mediana = meio;
+        A.set(i, J);
+        J.lastPosition = i;
+
+        A.set(j, I);
+        I.lastPosition = j;
+    }
+
+    public void quicksort(List<Participant> A, int p, int r) {
+        if (p < r) {
+            int q = this.partition(A, p, r);
+            quicksort(A, p, q - 1);
+            quicksort(A, q + 1, r);
+        }
+    }
+
+    // public int partition(List<Participant> A, int p, int r) {
+    // Participant x = A.get(r - 1);
+    // int i = p - 1;
+    // int j;
+    // for (j = p; j < r; j++) {
+    // if (A.get(j).age <= x.age) {
+    // i = i + 1;
+    // this.swap(A, i, j);
+    // }
+    // }
+    // return (i + 1);
+    // }
+
+    public int partition(List<Participant> A, int p, int r) {
+        int meio = (p + r - 1) / 2;
+        Participant a = A.get(p);
+        Participant b = A.get(meio);
+        Participant c = A.get(r - 1);
+        int medianaIndice = 0;
+
+        if (a.age < b.age) {
+            if (b.age < c.age) {
+                medianaIndice = meio;
             }
 
             else {
-                if (a.idade < c.idade)
-                    mediana = r;
+                if (a.age < c.age)
+                    medianaIndice = r - 1;
                 else
-                    mediana = p;
+                    medianaIndice = p;
             }
         }
 
         else {
-            if (c.idade < b.idade)
-                mediana = meio;
+            if (c.age < b.age)
+                medianaIndice = meio;
 
             else {
-                if (c.idade < a.idade)
-                    mediana = r;
+                if (c.age < a.age)
+                    medianaIndice = r - 1;
 
                 else
-                    mediana = p;
+                    medianaIndice = p;
             }
         }
+        this.swap(A, medianaIndice, r - 1);
 
-        return mediana;
-    }
-
-    public void quickSort(List<Pessoa> pessoas, int p, int r) {
-        if (p < r) {
-            int q = separar(pessoas, p, r);
-            quickSort(pessoas, p, q - 1);
-            quickSort(pessoas, q + 1, r);
-        }
-    }
-
-    public int separar(List<Pessoa> pessoas, int p, int r) {
-        int mediana = encontrarPivo(p, r);
-        int i = p + 1;
-        int j = r;
-        Pessoa pivo = pessoas.get(mediana);
-        while (i <= j) {
-            Pessoa pi = pessoas.get(i);
-            Pessoa pj = pessoas.get(j);
-            if (pi.idade <= pivo.idade)
-                i++;
-            else if (pj.idade > pivo.idade)
-                j--;
-            else if (i <= j) {
-                trocar(pessoas, i, j);
-                i++;
-                j--;
+        Participant x = A.get(r - 1);
+        int i = p - 1;
+        int j;
+        for (j = p; j < r - 1; j++) {
+            if (A.get(j).age <= x.age) {
+                i = i + 1;
+                this.swap(A, i, j);
             }
         }
-
-        trocar(pessoas, p, j);
-        return j;
-    }
-
-    public void trocar(List<Pessoa> pessoas, int i, int j) {
-        Pessoa pi = pessoas.get(i);
-        Pessoa pj = pessoas.get(j);
-
-        Pessoa aux = pi;
-        pessoas.set(i, pj);
-        pessoas.set(j, aux);
-    }
-
-    public void percorrerSemelhantes() {
-        int size = Pessoas.size() - 1;
-        int i;
-        for (i = 0; i < size; i++) {
-            Pessoa p1 = Pessoas.get(i);
-            Pessoa p2 = Pessoas.get(i + 1);
-            if (p1.idade == p2.idade) {
-                if (p2.posicaoInicial == i) {
-                    caotic = true;
-                    return;
-                }
-            }
-            caotic = false;
-        }
-    }
-
-    public void imprimirPessoas() {
-        for (Pessoa p : Pessoas) {
-            System.out.println(p.nome + " " + p.idade);
-        }
-    }
-
-    public void imprimirSelecionados() {
-        int i;
-        for (i = posicaoNomeImpresso - 1; i < quantidadeNomesImpressos + posicaoNomeImpresso - 1; i++) {
-            Pessoa pi = Pessoas.get(i);
-            System.out.println(pi.nome + " " + pi.idade);
-        }
+        this.swap(A, i + 1, r - 1);
+        return (i + 1);
     }
 
     public static void main(String[] args) {
         Main main = new Main();
-        Scanner scanner = new Scanner(System.in);
-
-        main.setData(scanner);
-
-        main.quickSort(main.Pessoas, 0, main.Pessoas.size() - 1);
-
-        main.percorrerSemelhantes();
-        if (main.caotic) {
-            System.out.println("yes");
-        } else {
-            System.out.println("no");
-        }
-        // main.imprimirSelecionados();
-        main.imprimirPessoas();
-        System.out.println();
-
-        scanner.close();
+        main.setParticipants();
+        main.printParticipants();
     }
 }
