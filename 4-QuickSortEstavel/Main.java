@@ -137,19 +137,23 @@ public class Main {
 
     public boolean verifyOrder() {
         int i;
-        for (i = 0; i < this.participants.size() - 1; i++) {
-            Participant p1 = participants.get(i);
-            Participant p2 = participants.get(i + 1);
 
-            if (p1.age == p2.age) {
-                if ((p1.firstPosition < p2.firstPosition) && (p1.lastPosition < p2.lastPosition)) {
-                    return true;
-                } else {
-                    return false;
+        if (this.participants.size() > 1) {
+            for (i = 0; i < this.participants.size() - 2; i++) {
+                Participant p1 = participants.get(i);
+                Participant p2 = participants.get(i + 1);
+
+                if (p1.age == p2.age) {
+                    if ((p1.firstPosition < p2.firstPosition) && (p1.lastPosition < p2.lastPosition)) {
+                        continue;
+                    } else {
+                        return false;
+                    }
                 }
             }
+            return true;
         }
-        return false;
+        return true;
     }
 
     public static void main(String[] args) {
