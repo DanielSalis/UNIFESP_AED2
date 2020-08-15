@@ -11,6 +11,8 @@ public class Main {
         String name;
     }
 
+    int positionToPrint;
+    int numberOfPrints;
     int numberOfParticipants;
     List<Participant> participants = new ArrayList<Participant>();
 
@@ -29,17 +31,18 @@ public class Main {
             this.participants.add(p);
         }
 
+        this.positionToPrint = s.nextInt();
+        this.numberOfPrints = s.nextInt();
+
         s.close();
 
-        this.quicksort(this.participants, 0, this.participants.size());
+        this.quicksort(this.participants, 0, this.participants.size() - 1);
     }
 
     public void printParticipants() {
-        System.out.println("--------------");
-
         int i;
-        for (i = 0; i < this.numberOfParticipants; i++) {
-            Participant p = participants.get(i);
+        for (i = 0; i < this.numberOfPrints; i++) {
+            Participant p = participants.get(i + positionToPrint - 1);
             System.out.println(p.age + " " + p.name);
         }
     }
@@ -77,55 +80,82 @@ public class Main {
     // }
 
     public int partition(List<Participant> A, int p, int r) {
-        int meio = (p + r - 1) / 2;
+        int meio = (p + r) / 2;
         Participant a = A.get(p);
         Participant b = A.get(meio);
-        Participant c = A.get(r - 1);
-        int medianaIndice = 0;
+        Participant c = A.get(r);
+        int mediana = 0;
 
         if (a.age < b.age) {
             if (b.age < c.age) {
-                medianaIndice = meio;
+                mediana = meio;
             }
 
             else {
                 if (a.age < c.age)
-                    medianaIndice = r - 1;
+                    mediana = r;
                 else
-                    medianaIndice = p;
+                    mediana = p;
             }
         }
 
         else {
             if (c.age < b.age)
-                medianaIndice = meio;
+                mediana = meio;
 
             else {
                 if (c.age < a.age)
-                    medianaIndice = r - 1;
+                    mediana = r;
 
                 else
-                    medianaIndice = p;
+                    mediana = p;
             }
         }
-        this.swap(A, medianaIndice, r - 1);
+        this.swap(A, mediana, r);
 
-        Participant x = A.get(r - 1);
+        Participant x = A.get(r);
         int i = p - 1;
         int j;
-        for (j = p; j < r - 1; j++) {
+        for (j = p; j <= r - 1; j++) {
             if (A.get(j).age <= x.age) {
                 i = i + 1;
                 this.swap(A, i, j);
             }
         }
-        this.swap(A, i + 1, r - 1);
+        this.swap(A, i + 1, r);
         return (i + 1);
+    }
+
+    public void isStable() {
+        boolean stable = this.verifyOrder();
+        if (stable) {
+            System.out.println("yes");
+        } else {
+            System.out.println("no");
+        }
+    }
+
+    public boolean verifyOrder() {
+        int i;
+        for (i = 0; i < this.participants.size() - 1; i++) {
+            Participant p1 = participants.get(i);
+            Participant p2 = participants.get(i + 1);
+
+            if (p1.age == p2.age) {
+                if ((p1.firstPosition < p2.firstPosition) && (p1.lastPosition < p2.lastPosition)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
         Main main = new Main();
         main.setParticipants();
+        main.isStable();
         main.printParticipants();
     }
 }
