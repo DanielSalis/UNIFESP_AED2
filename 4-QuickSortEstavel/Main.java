@@ -66,19 +66,6 @@ public class Main {
         }
     }
 
-    // public int partition(List<Participant> A, int p, int r) {
-    // Participant x = A.get(r - 1);
-    // int i = p - 1;
-    // int j;
-    // for (j = p; j < r; j++) {
-    // if (A.get(j).age <= x.age) {
-    // i = i + 1;
-    // this.swap(A, i, j);
-    // }
-    // }
-    // return (i + 1);
-    // }
-
     public int partition(List<Participant> A, int p, int r) {
         int meio = (p + r) / 2;
         Participant a = A.get(p);
