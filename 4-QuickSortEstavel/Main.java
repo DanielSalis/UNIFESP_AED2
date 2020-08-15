@@ -43,7 +43,7 @@ public class Main {
         int i;
         for (i = 0; i < this.numberOfPrints; i++) {
             Participant p = participants.get(i + positionToPrint - 1);
-            System.out.println(p.age + " " + p.name);
+            System.out.println(p.name + " " + p.age);
         }
     }
 
