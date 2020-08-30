@@ -71,7 +71,7 @@ public class Main {
             C[A[j]] = C[A[j]] + 1;
         }
 
-        for (i = 1; i < k - 1; i++) {
+        for (i = 1; i < 122; i++) {
             C[i] = C[i] + C[i - 1];
         }
 
@@ -88,7 +88,7 @@ public class Main {
         int j;
         for (i = 0; i < this.quantityOfNames; i++) {
             int[] nameInt = ListA.get(i);
-            for (j = 0; j < nameInt.length - 1; j++) {
+            for (j = 0; j < nameInt.length; j++) {
                 System.out.print(nameInt[j] + " ");
             }
             System.out.println(" ");
