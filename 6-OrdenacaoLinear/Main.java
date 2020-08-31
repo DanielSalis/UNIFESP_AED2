@@ -1,102 +1,95 @@
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-    int quantityOfNames;
-    List<String> namesString = new ArrayList<String>();
-    List<int[]> namesInt = new ArrayList<int[]>();
-    int positionToPrint;
-    int numberOfPrints;
-    int sizeOfBiggestString;
 
-    public void setInputs() {
-        Scanner s = new Scanner(System.in);
-
-        this.quantityOfNames = s.nextInt();
-
-        int i;
-        for (i = 0; i < quantityOfNames; i++) {
-            String name = s.next().toLowerCase();
-
-            int j;
-            String spaces = " ";
-            for (j = name.length() - 1; j < 26; j++) {
-                spaces = spaces + " ";
-            }
-
-            name = name + spaces;
-            this.namesString.add(name);
-
-            int[] array = new int[name.length() - 1];
-            int k;
-            for (k = 0; k < name.length() - 1; k++) {
-                array[k] = (int) (name.charAt(k));
-            }
-            namesInt.add(array);
-        }
-
-        this.positionToPrint = s.nextInt();
-        this.numberOfPrints = s.nextInt();
-
-        s.close();
-
-        this.RadixSort(this.namesInt, 27);
-    }
-
-    public void RadixSort(List<int[]> ListA, int d) {
+    public void sort(int[][] A, int k, int digit) {
+        int[] C = new int[k];
         int i;
 
-        List<int[]> ListB = new ArrayList<int[]>();
-
-        for (i = 0; i < quantityOfNames; i++) {
-            int[] A = ListA.get(i);
-            int[] B = new int[A.length];
-            CountingSort(A, B, d);
-            ListB.add(B);
-        }
-        this.printNamesInt(ListB);
-    }
-
-    public void CountingSort(int[] A, int[] B, int k) {
-        int[] C = new int[123];
-
-        int i;
-        for (i = 0; i < 122; i++) {
+        for (i = 0; i < k; i++) {
             C[i] = 0;
         }
 
-        int j;
-        for (j = 0; j < A.length - 1; j++) {
-            C[A[j]] = C[A[j]] + 1;
+        for (i = 0; i < A.length; i++) {
+            C[A[i][digit]]++;
         }
 
-        for (i = 1; i < 122; i++) {
-            C[i] = C[i] + C[i - 1];
+        for (i = 1; i < k; i++) {
+            C[i] += C[i - 1];
         }
 
-        for (j = A.length - 1; j >= 0; j--) {
-            B[C[A[j]]] = A[j];
-            C[A[j]] = C[A[j]] - 1;
+        int[][] B = new int[A.length][];
+        for (i = A.length - 1; i >= 0; i--) {
+            B[C[A[i][digit]] - 1] = A[i];
+            C[A[i][digit]]--;
+        }
+
+        for (i = 0; i < A.length; i++) {
+            A[i] = B[i];
+        }
+        print(C);
+    }
+
+    public void radixSort(int[][] A, int d) {
+        for (int i = d - 1; i >= 0; i--) {
+            sort(A, 28, i);
         }
     }
 
-    public void printNamesInt(List<int[]> ListA) {
-        System.out.println("-------");
-
-        int i;
-        int j;
-        for (i = 0; i < this.quantityOfNames; i++) {
-            int[] nameInt = ListA.get(i);
-            for (j = 0; j < nameInt.length; j++) {
-                System.out.print(nameInt[j] + " ");
-            }
-            System.out.println(" ");
+    public void print(int[] list) {
+        for (int i = 1; i < list.length; i++) {
+            System.out.print(list[i] + " ");
         }
+        System.out.println();
+    }
+
+    public int[][] convertStrings(List<String> arr, int max) {
+        int[][] newArray = new int[arr.size()][];
+        for (int i = 0; i < arr.size(); i++) {
+            int[] converted = new int[max];
+            int len = arr.get(i).length();
+            for (int j = 0; j < len; j++) {
+                converted[j] = (int) arr.get(i).charAt(j) - 96;
+            }
+            if (len < max) {
+                for (int j = len; j < max; j++) {
+                    converted[j] = 0;
+                }
+            }
+            newArray[i] = converted;
+        }
+        return newArray;
     }
 
     public static void main(String[] args) {
-        Main m = new Main();
-        m.setInputs();
+        Main cs = new Main();
+        Scanner scanner = new Scanner(System.in);
+
+        List<String> originalList = new ArrayList<String>();
+        int max = 0;
+        int n = scanner.nextInt();
+        for (int i = 0; i < n; i++) {
+            String s = scanner.next().toLowerCase();
+            originalList.add(s);
+            if (s.length() > max)
+                max = s.length();
+        }
+
+        int start = scanner.nextInt();
+        int limit = scanner.nextInt();
+        scanner.close();
+        int[][] arr = cs.convertStrings(originalList, max);
+        cs.radixSort(arr, max);
+
+        int starter = start - 1;
+        for (int i = starter; i < starter + limit; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                if (arr[i][j] != 0)
+                    System.out.print((char) (arr[i][j] + 96));
+            }
+            System.out.println();
+        }
     }
 }
