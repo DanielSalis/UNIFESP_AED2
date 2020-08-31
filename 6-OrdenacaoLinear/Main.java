@@ -3,8 +3,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    List<String> nameStrings = new ArrayList<String>();
+    int biggestString = 0;
+    int positionToPrint;
+    int numberOfPrints;
+    int[][] nameInt;
 
-    public void sort(int[][] A, int k, int digit) {
+    public void setInputs() {
+        Scanner s = new Scanner(System.in);
+
+        int n = s.nextInt();
+
+        int i;
+        for (i = 0; i < n; i++) {
+            String name = s.next().toLowerCase();
+            nameStrings.add(name);
+            if (name.length() > this.biggestString)
+                this.biggestString = name.length();
+        }
+
+        this.positionToPrint = s.nextInt();
+        this.numberOfPrints = s.nextInt();
+
+        this.nameInt = this.convertNames(nameStrings, this.biggestString);
+        this.radixSort(nameInt, this.biggestString);
+
+        s.close();
+    }
+
+    public int[][] convertNames(List<String> names, int max) {
+        int[][] array = new int[names.size()][];
+
+        int i;
+        for (i = 0; i < names.size(); i++) {
+            int[] convertedName = new int[max];
+
+            int j;
+            for (j = 0; j < names.get(i).length(); j++) {
+                convertedName[j] = (int) names.get(i).charAt(j) - 96;
+            }
+            if (names.get(i).length() < max) {
+                int k;
+                for (k = names.get(i).length(); k < max; k++) {
+                    convertedName[k] = 0;
+                }
+            }
+            array[i] = convertedName;
+        }
+        return array;
+    }
+
+    public void radixSort(int[][] A, int d) {
+        for (int i = d - 1; i >= 0; i--) {
+            countingSort(A, 28, i);
+        }
+    }
+
+    public void countingSort(int[][] A, int k, int digit) {
         int[] C = new int[k];
         int i;
 
@@ -29,67 +84,35 @@ public class Main {
         for (i = 0; i < A.length; i++) {
             A[i] = B[i];
         }
-        print(C);
+
+        printDigits(C);
     }
 
-    public void radixSort(int[][] A, int d) {
-        for (int i = d - 1; i >= 0; i--) {
-            sort(A, 28, i);
-        }
-    }
-
-    public void print(int[] list) {
-        for (int i = 1; i < list.length; i++) {
-            System.out.print(list[i] + " ");
+    public void printDigits(int[] A) {
+        int i;
+        for (i = 1; i < A.length; i++) {
+            System.out.print(A[i] + " ");
         }
         System.out.println();
     }
 
-    public int[][] convertStrings(List<String> arr, int max) {
-        int[][] newArray = new int[arr.size()][];
-        for (int i = 0; i < arr.size(); i++) {
-            int[] converted = new int[max];
-            int len = arr.get(i).length();
-            for (int j = 0; j < len; j++) {
-                converted[j] = (int) arr.get(i).charAt(j) - 96;
-            }
-            if (len < max) {
-                for (int j = len; j < max; j++) {
-                    converted[j] = 0;
-                }
-            }
-            newArray[i] = converted;
-        }
-        return newArray;
-    }
+    public void printNames() {
+        int index = this.positionToPrint - 1;
 
-    public static void main(String[] args) {
-        Main cs = new Main();
-        Scanner scanner = new Scanner(System.in);
-
-        List<String> originalList = new ArrayList<String>();
-        int max = 0;
-        int n = scanner.nextInt();
-        for (int i = 0; i < n; i++) {
-            String s = scanner.next().toLowerCase();
-            originalList.add(s);
-            if (s.length() > max)
-                max = s.length();
-        }
-
-        int start = scanner.nextInt();
-        int limit = scanner.nextInt();
-        scanner.close();
-        int[][] arr = cs.convertStrings(originalList, max);
-        cs.radixSort(arr, max);
-
-        int starter = start - 1;
-        for (int i = starter; i < starter + limit; i++) {
-            for (int j = 0; j < arr[i].length; j++) {
-                if (arr[i][j] != 0)
-                    System.out.print((char) (arr[i][j] + 96));
+        int i;
+        int j;
+        for (i = index; i < index + this.numberOfPrints; i++) {
+            for (j = 0; j < this.nameInt[i].length; j++) {
+                if (this.nameInt[i][j] != 0)
+                    System.out.print((char) (this.nameInt[i][j] + 96));
             }
             System.out.println();
         }
+    }
+
+    public static void main(String[] args) {
+        Main m = new Main();
+        m.setInputs();
+        m.printNames();
     }
 }
