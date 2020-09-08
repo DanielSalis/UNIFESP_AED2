@@ -37,32 +37,32 @@ public class Main {
 
         this.numberToSearch = s.nextInt();
 
-        this.heightBefore = this.maxDepth(this.root);
+        this.heightBefore = this.getHeigth(this.root);
         this.search(this.root, numberToSearch);
 
         if (this.isIn) {
             this.preDelete(numberToSearch);
-            this.heightAffter = this.maxDepth(this.root);
+            this.heightAffter = this.getHeigth(this.root);
             this.itensAffter = this.itensBefore - 1;
         } else {
             this.preInsert(numberToSearch);
             this.itensAffter = this.itensBefore + 1;
-            this.heightAffter = this.maxDepth(this.root);
+            this.heightAffter = this.getHeigth(this.root);
         }
         s.close();
     }
 
-    int maxDepth(Node node) {
+    public int getHeigth(Node node) {
         if (node == null)
             return 0;
         else {
-            int lDepth = maxDepth(node.left);
-            int rDepth = maxDepth(node.right);
+            int leftDepth = getHeigth(node.left);
+            int rigthDepth = getHeigth(node.right);
 
-            if (lDepth > rDepth)
-                return (lDepth + 1);
+            if (leftDepth > rigthDepth)
+                return (leftDepth + 1);
             else
-                return (rDepth + 1);
+                return (rigthDepth + 1);
         }
     }
 
