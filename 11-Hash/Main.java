@@ -51,10 +51,10 @@ public class Main {
         }
     }
 
-    public Node createNewNode(int chave) {
+    public Node createNewNode(int key) {
         Node newNode = new Node();
         newNode.prox = null;
-        newNode.key = chave;
+        newNode.key = key;
         return newNode;
     }
 
