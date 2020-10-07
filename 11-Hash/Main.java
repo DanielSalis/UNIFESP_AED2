@@ -22,7 +22,7 @@ public class Main {
 
         initializeHash(this.size);
 
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < this.quantityOfNumbers; i++) {
 
             int newKey = s.nextInt();
             insertNode(newKey, this.size, this.hash);
