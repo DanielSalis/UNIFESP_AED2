@@ -37,6 +37,34 @@ public class Main {
     public static int _case2 = 10000000;
     public int emptyFiles = 0;
 
+    public void start() {
+        try {
+            // Casos de capacidade de memoria
+            int[] sizes = new int[2];
+            sizes[0] = _case1;
+            sizes[1] = _case2;
+
+            // Arquivos a serem lidos
+            String[] files = new String[2];
+            files[0] = "arq15M.txt";
+            files[1] = "arq40M.txt";
+
+            // 4 Casos possíveis
+            for (int size : sizes) {
+                for (String file : files) {
+                    // Tamanho e nome
+                    this._sizeFile = size;
+                    this._outputFileName = "output_" + size;
+
+                    // Cria os arquivos
+                    this.createFiles(file);
+                }
+            }
+        } catch (Exception ex) {
+            out.println(ex.getMessage());
+        }
+    }
+
     public void createFiles(String fileInput) throws IOException {
         // criando os arquivos temporarios com nomes sequenciais e
         // escrevendo os valores ordenados dentro de cada um
@@ -91,7 +119,7 @@ public class Main {
         String line = buffer.readLine();
         boolean stop = false;
         int i = 0;
-        while (!stop && i < _numFiles) {
+        while (stop != true && i < _numFiles) {
             long[] array = new long[this._sizeFile];
             int j;
             // Preenche um array com o tamanho maximo definido para cada arquivo
@@ -225,29 +253,6 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
 
-        try {
-            // Casos de capacidade de memoria
-            int[] sizes = new int[2];
-            sizes[0] = _case1;
-            sizes[1] = _case2;
-
-            // Arquivos a serem lidos
-            String[] files = new String[2];
-            files[0] = "arq15M.txt";
-            files[1] = "arq40M.txt";
-
-            // 4 Casos possíveis
-            for (int size : sizes) {
-                for (String file : files) {
-                    // Tamanho e nome
-                    main._sizeFile = size;
-                    main._outputFileName = "output_" + size;
-                    // Cria os arquivos
-                    main.createFiles(file);
-                }
-            }
-        } catch (Exception ex) {
-            out.println(ex.getMessage());
-        }
+        main.start();
     }
 }
